@@ -24,7 +24,7 @@
                 "cd /home/ubuntu/node-server-for-test",
                 "git pull",
                 "npm i",
-                "sudo systemctl restart server"
+                "sudo systemctl restart server --no-block"
             ]
         }
     ]
