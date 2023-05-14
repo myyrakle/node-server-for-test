@@ -3,7 +3,6 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo $pem_key > ./pem_key
       - echo "Installing HashiCorp Packer..."
       - curl -qL -o packer.zip https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip && unzip packer.zip
       - echo "Installing jq..."
@@ -17,9 +16,13 @@ phases:
       - aws configure set aws_access_key_id $aws_access_key_id
       - aws configure set aws_secret_access_key $aws_secret_access_key
       - ./packer build packer.json
+      - ami_id=$(jq -r '.builds[0].artifact_id|split(":")[1]' ./manifest.json)
+      - echo $ami_id
   post_build:
     commands:
       - echo "HashiCorp Packer build completed on `date`"
+      - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data '{"ImageId":"$ami_id"}' --query 'LaunchTemplateVersion.VersionNumber')
+      - if [ "$CURRENT" = "BLUE" ]; aws update-auto-scaling-group --auto-scaling-group-name green --launch-template '{"Version":"$template_version"}' else aws update-auto-scaling-group --auto-scaling-group-name blue --launch-template '{"Version":"$template_version"}' fi
 artifacts:
   files:
     - '**/*'
