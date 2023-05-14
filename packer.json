@@ -9,11 +9,12 @@
         "type": "amazon-ebs",
         "region": "{{user `aws_region`}}",
         "instance_type": "t2.micro",
-        "ssh_username": "ec2-user",
+        "ssh_username": "ubuntu",
         "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
         "ami_description": "build",
         "associate_public_ip_address": "true", 
-	"ssh_certificate_file": "pem_key"
+	"ssh_certificate_file": "pem_key", 
+	"security_group_id": "sg-0a66de72728b305df"
     }],
     "provisioners": [
         {
