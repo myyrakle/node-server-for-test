@@ -3,6 +3,17 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - echo "aws setting..."
+      - aws configure set region $AWS_REGION
+      - aws configure set aws_access_key_id $aws_access_key_id
+      - aws configure set aws_secret_access_key $aws_secret_access_key
+      - echo "aws setting complete"
+      - CURRENT_TG_ARN=$(aws elbv2 describe-listeners --listener-arns $(aws elbv2 describe-load-balancers --load-balancer-arns $LB_ARN --query 'LoadBalancers[].{ListenerArns:ListenerArns}' --output text) --query 'Listeners[].{DefaultActions:DefaultActions}' --output text | grep 'TargetGroupArn' | awk '{print $2}')
+      - CURRENT_TG_NAME=$(aws elbv2 describe-target-groups --target-group-arns $CURRENT_TG_ARN --query 'TargetGroups[].{TargetGroupName:TargetGroupName}' --output text)
+      - |
+        if [ "$CURRENT_TG_NAME" = "blue" ];then NEXT=green 
+        else NEXT=blue 
+        fi
       - echo "Installing HashiCorp Packer..."
       - curl -qL -o packer.zip https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip && unzip packer.zip
       - echo "Installing jq..."
@@ -12,9 +23,6 @@ phases:
   build:
     commands:
       # test here if you need
-      - aws configure set region $AWS_REGION
-      - aws configure set aws_access_key_id $aws_access_key_id
-      - aws configure set aws_secret_access_key $aws_secret_access_key
       - ./packer build packer.json
       - ami_id=$(cat manifest.json | jq -r .builds[0].artifact_id |  cut -d':' -f2)
       - echo $ami_id
@@ -24,13 +32,7 @@ phases:
       - template_data=$(printf '{"ImageId":"%s"}' "$ami_id")
       - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data $template_data --query 'LaunchTemplateVersion.VersionNumber')
       - version_info=$(printf '{"Version":"%s"}' "$template_version")
-      - CURRENT_TG_ARN=$(aws elbv2 describe-listeners --listener-arns $(aws elbv2 describe-load-balancers --load-balancer-arns $LB_ARN --query 'LoadBalancers[].{ListenerArns:ListenerArns}' --output text) --query 'Listeners[].{DefaultActions:DefaultActions}' --output text | grep 'TargetGroupArn' | awk '{print $2}')
-      - CURRENT_TG_NAME=$(aws elbv2 describe-target-groups --target-group-arns $CURRENT_TG_ARN --query 'TargetGroups[].{TargetGroupName:TargetGroupName}' --output text)
-      - |
-        if [ "$CURRENT_TG_NAME" = "blue" ];then NEXT=green 
-        else NEXT=blue 
-        fi
-      - aws update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info
 artifacts:
   files:
     - '**/*'
