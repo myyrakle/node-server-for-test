@@ -3,17 +3,16 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - echo $pem_key > ./pem_key
       - echo "Installing HashiCorp Packer..."
       - curl -qL -o packer.zip https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip && unzip packer.zip
       - echo "Installing jq..."
       - curl -qL -o jq https://stedolan.github.io/jq/download/linux64/jq && chmod +x ./jq
       - echo "Validating packer.json"
       - ./packer validate packer.json
-      - echo $pem_key > ./pem_key
   build:
     commands:
       # test here if you need
-      - ls
       - aws configure set region $AWS_REGION
       - aws configure set aws_access_key_id $aws_access_key_id
       - aws configure set aws_secret_access_key $aws_secret_access_key
