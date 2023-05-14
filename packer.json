@@ -5,7 +5,7 @@
 	"version": "{{env `CODEBUILD_BUILD_NUMBER`}}"
     },
     "builders": [{
-	"source_ami": "ami-0a88194cb94adbe45", 
+	"source_ami": "ami-0bd60466529ee22ef", 
         "type": "amazon-ebs",
         "region": "{{user `aws_region`}}",
         "instance_type": "t2.micro",
