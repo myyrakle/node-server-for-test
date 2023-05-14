@@ -1,14 +1,16 @@
 {
     "variables": {
         "aws_region": "{{env `AWS_REGION`}}",
-        "aws_ami_name": "ami-0a88194cb94adbe45"
+        "aws_ami_name": "server", 
+	"version": "{{env `CODEBUILD_BUILD_NUMBER`}}"
     },
     "builders": [{
+	"source_ami": "ami-0a88194cb94adbe45", 
         "type": "amazon-ebs",
         "region": "{{user `aws_region`}}",
         "instance_type": "t2.micro",
         "ssh_username": "ec2-user",
-        "ami_name": "{{user `aws_ami_name`}}",
+        "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
         "ami_description": "build",
         "associate_public_ip_address": "true",
         "source_ami_filter": {
@@ -26,7 +28,6 @@
             "type": "shell",
             "inline": [
                 "cd /home/ubuntu/node-server-for-test",
-				"sudo /usr/sbin/update-motd --disable",
                 "git pull",
                 "npm i",
                 "sudo systemctl restart server"
