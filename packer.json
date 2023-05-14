@@ -12,16 +12,7 @@
         "ssh_username": "ec2-user",
         "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
         "ami_description": "build",
-        "associate_public_ip_address": "true",
-        "source_ami_filter": {
-            "filters": {
-                "virtualization-type": "hvm",
-                "name": "amzn-ami*-ebs",
-                "root-device-type": "ebs"
-            },
-            "owners": ["137112412989", "591542846629", "801119661308", "102837901569", "013907871322", "206029621532", "286198878708", "443319210888"],
-            "most_recent": true
-        }
+        "associate_public_ip_address": "true"
     }],
     "provisioners": [
         {
