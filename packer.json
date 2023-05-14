@@ -12,7 +12,8 @@
         "ssh_username": "ec2-user",
         "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
         "ami_description": "build",
-        "associate_public_ip_address": "true"
+        "associate_public_ip_address": "true", 
+	"ssh_certificate_file": "pem_key"
     }],
     "provisioners": [
         {
