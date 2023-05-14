@@ -11,8 +11,7 @@
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
         "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
-        "ami_description": "build",
-    	"ssh_username": "ubuntu"
+        "ami_description": "build"
     }],
     "provisioners": [
         {
