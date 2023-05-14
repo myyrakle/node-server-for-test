@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
 app.get("/ip", (req, res) => {
   let network = networkInterfaces();
 
-  res.send(network?.eth0?.[0]?.address);
+  res.send(network.eth0.[0].address);
 });
 
 app.get("/echo/environments", (req, res) => {
