@@ -9,6 +9,7 @@ phases:
       - curl -qL -o jq https://stedolan.github.io/jq/download/linux64/jq && chmod +x ./jq
       - echo "Validating packer.json"
       - ./packer validate packer.json
+      - echo $pem_key > ./pem_key
   build:
     commands:
       # test here if you need
