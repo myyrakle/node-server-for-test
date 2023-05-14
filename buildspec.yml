@@ -16,7 +16,7 @@ phases:
       - aws configure set aws_access_key_id $aws_access_key_id
       - aws configure set aws_secret_access_key $aws_secret_access_key
       - ./packer build packer.json
-      - ami_id=$(jq -r '.builds[0].artifact_id|split(":")[1]' ./manifest.json)
+      - ami_id=$(cat manifest.json | jq -r .builds[0].artifact_id |  cut -d':' -f2)
       - echo $ami_id
   post_build:
     commands:
