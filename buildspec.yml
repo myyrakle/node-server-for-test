@@ -21,8 +21,10 @@ phases:
   post_build:
     commands:
       - echo "HashiCorp Packer build completed on `date`"
-      - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data '{\"ImageId\":\"$ami_id\"}' --query 'LaunchTemplateVersion.VersionNumber')
-      - if [ "$CURRENT" = "BLUE" ]; aws update-auto-scaling-group --auto-scaling-group-name green --launch-template '{\"Version\":\"$template_version\"}' else aws update-auto-scaling-group --auto-scaling-group-name blue --launch-template '{\"Version\":\"$template_version\"}' fi
+      - template_data=$(printf '{"ImageId":"%s"}' "$ami_id")
+      - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data $template_data --query 'LaunchTemplateVersion.VersionNumber')
+      - version_info=$(printf '{"Version":"%s"}' "$template_version")
+      - if [ "$CURRENT" = "BLUE" ]; aws update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info else aws update-auto-scaling-group --auto-scaling-group-name blue --launch-template $version_info fi
 artifacts:
   files:
     - '**/*'
