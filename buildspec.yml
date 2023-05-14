@@ -13,6 +13,7 @@ phases:
   build:
     commands:
       # test here if you need
+      - ls
       - aws configure set region $AWS_REGION
       - aws configure set aws_access_key_id $aws_access_key_id
       - aws configure set aws_secret_access_key $aws_secret_access_key
