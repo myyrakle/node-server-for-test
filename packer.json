@@ -14,6 +14,7 @@
         "ami_description": "build",
         "associate_public_ip_address": "true", 
 	"ssh_certificate_file": "pem_key", 
+	"vpc_id": "vpc-0145eb8e5a42ee461",
 	"security_group_id": "sg-0a66de72728b305df"
     }],
     "provisioners": [
