@@ -12,7 +12,9 @@
         "ssh_username": "ubuntu",
         "ami_name": "{{user `aws_ami_name`}}-{{user `version`}}",
         "ami_description": "build", 
-	"associate_public_ip_address": true
+	"associate_public_ip_address": true,
+        "communicator": "ssh",
+	"ssh_pty" : "true"
     }],
     "provisioners": [
         {
