@@ -14,7 +14,8 @@
         "ami_description": "build", 
 	"associate_public_ip_address": true,
         "communicator": "ssh",
-	"ssh_pty" : "true"
+	"ssh_pty" : "true",
+	"temporary_key_pair_type": "ed25519"
     }],
     "provisioners": [
         {
