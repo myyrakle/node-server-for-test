@@ -29,7 +29,7 @@ phases:
   post_build:
     commands:
       - echo "HashiCorp Packer build completed on `date`"
-      - template_data=$(printf '{"ImageId":"%s"}' "$ami_id")
+      - template_data=$(printf '{"ImageId":"%s","InstanceType":"%s"}' "$ami_id" "t2.micro")
       - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data $template_data --query 'LaunchTemplateVersion.VersionNumber')
       - version_info=$(printf '{"Version":"%s","LaunchTemplateId":"%s"}' "$template_version" "$LAUNCH_TEMPLATE")
       - echo $version_info
