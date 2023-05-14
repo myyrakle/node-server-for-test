@@ -26,7 +26,7 @@ phases:
       - version_info=$(printf '{"Version":"%s"}' "$template_version")
       - CURRENT_TG_ARN=$(aws elbv2 describe-listeners --listener-arns $(aws elbv2 describe-load-balancers --load-balancer-arns $LB_ARN --query 'LoadBalancers[].{ListenerArns:ListenerArns}' --output text) --query 'Listeners[].{DefaultActions:DefaultActions}' --output text | grep 'TargetGroupArn' | awk '{print $2}')
       - CURRENT_TG_NAME=$(aws elbv2 describe-target-groups --target-group-arns $CURRENT_TG_ARN --query 'TargetGroups[].{TargetGroupName:TargetGroupName}' --output text)
-      - [ "$CURRENT_TG_NAME" = "blue" ] && NEXT=green || NEXT=blue fi
+      - bash -c [ "$CURRENT_TG_NAME" = "blue" ] && NEXT=green || NEXT=blue fi
       - aws update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info
 artifacts:
   files:
