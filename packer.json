@@ -27,5 +27,14 @@
                 "sudo systemctl restart server --no-block"
             ]
         }
+    ],
+    "post-processors": [
+	[
+	    {
+	        "output": "manifest.json",
+		"strip_path": true,
+		"type": "manifest"
+	    }
+	]
     ]
 }
