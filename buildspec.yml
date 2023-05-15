@@ -53,7 +53,7 @@ phases:
             echo "인스턴스 변경사항이 진행 중입니다. 대기 중..."
             sleep 10
         done
-      - $NEXT target group이 healthy해질때까지 대기합니다...
+      - echo "$NEXT target group이 healthy해질때까지 대기합니다..."
       - timeout=30
       - elapsed_time=0
       - interval=5
