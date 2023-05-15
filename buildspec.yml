@@ -35,7 +35,10 @@ phases:
       - echo $version_info
       - desired_size=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $CURRENT_TG_NAME --query 'AutoScalingGroups[*].[DesiredCapacity]' --output text)
       - desired_size=$(echo $desired_size | tr -d '\n\t ')
-      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info --min-size $desired_size --desired-capacity $desired_size
+      - max_size=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $CURRENT_TG_NAME --query 'AutoScalingGroups[*].[MaxSize]' --output text)
+      - max_size=$(echo $max_size | tr -d '\n\t ')
+      - printf 'desired_size:%s, max_size:%s' "$desired_size" "$max_size" 
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info --min-size $desired_size --desired-capacity $desired_size --max-size $max_size
 artifacts:
   files:
     - '**/*'
