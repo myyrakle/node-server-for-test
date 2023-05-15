@@ -33,7 +33,9 @@ phases:
       - template_version=$(aws ec2 create-launch-template-version --launch-template-id $LAUNCH_TEMPLATE --launch-template-data $template_data --query 'LaunchTemplateVersion.VersionNumber')
       - version_info=$(printf '{"Version":"%s","LaunchTemplateId":"%s"}' "$template_version" "$LAUNCH_TEMPLATE")
       - echo $version_info
-      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info
+      - desired_size=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $CURRENT_TG_NAME --query 'AutoScalingGroups[*].[DesiredCapacity]' --output text)
+      - min_size=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $CURRENT_TG_NAME --query 'AutoScalingGroups[*].[MinSize]' --output text)
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name green --launch-template $version_info --min-size $min_size --desired-capacity $desired_size
 artifacts:
   files:
     - '**/*'
